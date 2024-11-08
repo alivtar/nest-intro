@@ -1,0 +1,3 @@
+# Http Requests to app controller
+
+GET http://localhost:3000/
