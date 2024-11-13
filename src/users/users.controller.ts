@@ -1,23 +1,33 @@
-import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
+import { UsersService } from './providers/users.service';
+import { CreateUserDto } from './dtos/create-user.dto';
 
-// http:localhost:3000/users
 @Controller('users')
 export class UsersController {
-  @Get('/:id/:fullname?')
-  public getUsers(
-    @Param() params: { id: string; fullname: string },
-    @Query() query: { page: number; pageSize: number },
-  ) {
-    console.log('params', params);
-    console.log('query', query);
-    return 'You sent a request to get all the users.';
+  constructor(readonly usersService: UsersService) {
+    //
+  }
+
+  @Get()
+  public getUsers() {
+    return this.usersService.getAll();
+  }
+
+  @Get('/:id')
+  public getUser(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getUserById(id);
   }
 
   @Post()
-  public createUser(
-    @Body() body: { firstName: string; lastName: string; email: string },
-  ) {
-    console.log('body', body);
-    return 'You want to create a user, hah?';
+  public createUser(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.createUser(createUserDto);
   }
 }
