@@ -20,6 +20,16 @@ export class UsersService {
   }
 
   public async createUser(createUserDto: CreateUserDto) {
+    const existingUser = await this.usersRepository.findOne({
+      where: {
+        email: createUserDto.email,
+      },
+    });
+
+    if (existingUser) {
+      // todo: Handle the existing user error
+    }
+
     const newUser = this.usersRepository.create(createUserDto);
 
     return await this.usersRepository.save(newUser);
