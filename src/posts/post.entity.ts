@@ -20,7 +20,7 @@ export class Post {
   content: string;
 
   @Column({
-    type: 'number',
+    type: 'numeric',
     nullable: false,
   })
   user_id: User['id'];
