@@ -26,7 +26,8 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
           username: 'postgres',
           password: 'superuser',
           database: 'nestjs-blog',
-          entities: [User, Post],
+          // entities: [User, Post],
+          autoLoadEntities: true,
           synchronize: true,
         };
       },
