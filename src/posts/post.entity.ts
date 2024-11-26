@@ -1,27 +1,68 @@
 import { User } from 'src/users/user.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { postStatus, postType } from './enums';
+import { MetaOption } from 'src/meta-options/meta-option.entity';
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'varchar', length: 512, nullable: false })
+  title: string;
+
   @Column({
-    type: 'date',
+    type: 'enum',
+    enum: postType,
     nullable: false,
+    default: postType.POST,
   })
-  createdAt: Date;
+  postType: postType;
+
+  @Column({
+    type: 'enum',
+    enum: postStatus,
+    nullable: false,
+    default: postStatus.DRAFT,
+  })
+  status: postStatus;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  content?: string;
 
   @Column({
     type: 'varchar',
-    length: 10_000,
+    length: 256,
     nullable: false,
+    unique: true,
   })
-  content: string;
+  slug: string;
+
+  @Column({ type: 'varchar', length: 1024, nullable: true })
+  featuredImageUrl?: string;
 
   @Column({
-    type: 'numeric',
-    nullable: false,
+    type: 'timestamp',
+    nullable: true,
   })
-  user_id: User['id'];
+  publishedOn: Date;
+
+  @OneToOne(() => MetaOption)
+  @JoinColumn()
+  metaOptions?: JSON;
+
+  // @Column({
+  //   type: 'numeric',
+  //   nullable: false,
+  // })
+  // user_id: User['id'];
 }
