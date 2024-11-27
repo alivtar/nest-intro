@@ -3,6 +3,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -10,6 +12,8 @@ import {
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { postType } from './enums/post-type.enum';
 import { postStatus } from './enums/post-status.enum';
+import { Tag } from 'src/tags/tag.entity';
+import { IsArray, IsInt, IsOptional } from 'class-validator';
 
 @Entity()
 export class Post {
@@ -70,4 +74,8 @@ export class Post {
   @OneToOne(() => MetaOption, { cascade: true, eager: true })
   @JoinColumn()
   metaOptions?: JSON;
+
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags?: Tag[];
 }

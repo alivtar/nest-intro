@@ -19,6 +19,7 @@ import { CreatePostMetaOptionsDto } from '../../meta-options/dtos/create-post-me
 import { Type } from 'class-transformer';
 import { postType } from '../enums/post-type.enum';
 import { postStatus } from '../enums/post-status.enum';
+import { Tag } from 'src/tags/tag.entity';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -95,15 +96,6 @@ export class CreatePostDto {
   @IsOptional()
   publishOn?: Date;
 
-  @ApiPropertyOptional({
-    description: 'Array of ids of tags',
-    example: [1, 2],
-  })
-  @IsOptional()
-  @IsArray()
-  @IsInt({ each: true })
-  tags?: number[];
-
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDto)
@@ -112,4 +104,13 @@ export class CreatePostDto {
   @IsNotEmpty()
   @IsInt()
   authorId: number;
+
+  @ApiPropertyOptional({
+    description: 'Array of ids of tags',
+    example: [1, 2],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  tags?: number[];
 }
