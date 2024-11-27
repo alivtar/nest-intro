@@ -75,7 +75,7 @@ export class Post {
   @JoinColumn()
   metaOptions?: JSON;
 
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, (tag) => tag.posts)
   @JoinTable()
   tags?: Tag[];
 }
