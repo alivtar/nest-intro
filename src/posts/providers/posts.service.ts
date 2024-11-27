@@ -6,6 +6,7 @@ import { CreatePostDto } from '../dtos/create-post.dto';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { UsersService } from 'src/users/providers/users.service';
 import { TagsService } from 'src/tags/tags.service';
+import { PatchPostDto } from '../dtos/patch-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -41,5 +42,22 @@ export class PostsService {
     });
 
     return await this.postsRepository.save(post);
+  }
+
+  public async update(postId: number, patchPostDto: PatchPostDto) {
+    // find the post
+    const post = await this.postsRepository.findOneBy({ id: postId });
+
+    // find new tags
+    const newTags = await this.tagsService.findMultipleTags(patchPostDto.tags);
+
+    const updatedPost: Post = {
+      ...post,
+      ...patchPostDto,
+      metaOptions: null,
+      tags: newTags,
+    };
+
+    return await this.postsRepository.save(updatedPost);
   }
 }
