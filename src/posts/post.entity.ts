@@ -67,15 +67,7 @@ export class Post {
   @ManyToOne(() => User, (user) => user.posts)
   author: User;
 
-  @OneToOne(() => MetaOption)
+  @OneToOne(() => MetaOption, { cascade: true, eager: true })
   @JoinColumn()
   metaOptions?: JSON;
-
-  // tags?: Tag[];
-
-  // @Column({
-  //   type: 'numeric',
-  //   nullable: false,
-  // })
-  // user_id: User['id'];
 }

@@ -104,22 +104,12 @@ export class CreatePostDto {
   @IsInt({ each: true })
   tags?: number[];
 
-  //   @ApiPropertyOptional({
-  //     type: 'object',
-  //     required: false,
-  //     items: {
-  //       type: 'object',
-  //       properties: {
-  //         metaValue: {
-  //           type: 'json',
-  //           description: 'The metaValue is a JSON string',
-  //           example: '{"sidebarEnabled": true}',
-  //         },
-  //       },
-  //     },
-  //   })
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDto)
   metaOptions?: CreatePostMetaOptionsDto | null;
+
+  @IsNotEmpty()
+  @IsInt()
+  authorId: number;
 }
