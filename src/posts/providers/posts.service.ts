@@ -44,6 +44,10 @@ export class PostsService {
     return await this.postsRepository.save(post);
   }
 
+  public async delete(postId: number) {
+    return await this.postsRepository.delete({ id: postId });
+  }
+
   public async update(postId: number, patchPostDto: PatchPostDto) {
     // find the post
     const post = await this.postsRepository.findOneBy({ id: postId });

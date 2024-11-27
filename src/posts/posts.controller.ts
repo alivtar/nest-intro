@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -23,6 +24,11 @@ export class PostsController {
   @Post()
   public createPost(@Body() createPostDto: CreatePostDto) {
     return this.postsService.create(createPostDto);
+  }
+
+  @Delete('/:id')
+  public deletePost(@Param('id', ParseIntPipe) postId: number) {
+    return this.postsService.delete(postId);
   }
 
   @Patch('/:id')
