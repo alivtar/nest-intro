@@ -3,11 +3,13 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { postStatus, postType } from './enums';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
+import { postType } from './enums/post-type.enum';
+import { postStatus } from './enums/post-status.enum';
 
 @Entity()
 export class Post {
@@ -26,6 +28,14 @@ export class Post {
   postType: postType;
 
   @Column({
+    type: 'varchar',
+    length: 256,
+    nullable: false,
+    unique: true,
+  })
+  slug: string;
+
+  @Column({
     type: 'enum',
     enum: postStatus,
     nullable: false,
@@ -40,12 +50,10 @@ export class Post {
   content?: string;
 
   @Column({
-    type: 'varchar',
-    length: 256,
-    nullable: false,
-    unique: true,
+    type: 'text',
+    nullable: true,
   })
-  slug: string;
+  schema?: string;
 
   @Column({ type: 'varchar', length: 1024, nullable: true })
   featuredImageUrl?: string;
@@ -56,9 +64,14 @@ export class Post {
   })
   publishedOn: Date;
 
+  @ManyToOne(() => User, (user) => user.posts)
+  author: User;
+
   @OneToOne(() => MetaOption)
   @JoinColumn()
   metaOptions?: JSON;
+
+  // tags?: Tag[];
 
   // @Column({
   //   type: 'numeric',
