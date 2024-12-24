@@ -2,16 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import { UsersCreateManyProvider } from './users-create-many.provider';
+import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
+    private readonly configService: ConfigService,
+    private readonly createManyUsersProvider: UsersCreateManyProvider,
   ) {}
 
   public async getAll() {
+    const value = this.configService.get<string>('S3_BUCKET');
     return await this.usersRepository.find();
   }
 
@@ -33,5 +40,11 @@ export class UsersService {
     const newUser = this.usersRepository.create(createUserDto);
 
     return await this.usersRepository.save(newUser);
+  }
+
+  public async createManyUsers(createManyUsersDto: CreateManyUsersDto) {
+    return await this.createManyUsersProvider.createManyUsers(
+      createManyUsersDto,
+    );
   }
 }
