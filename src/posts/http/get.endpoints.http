@@ -1,0 +1,11 @@
+{{
+    // pre-request script
+    const startDate = new Date();
+    const endDate = new Date();
+
+    exports.startDate = startDate.toString();
+    exports.endDate = endDate.toString();
+}}
+
+GET http://localhost:3000/posts/
+    ?startDate={{startDate}}&endDate={{endDate}}&page=2&limit=15

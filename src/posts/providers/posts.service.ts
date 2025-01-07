@@ -7,6 +7,7 @@ import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { UsersService } from 'src/users/providers/users.service';
 import { TagsService } from 'src/tags/tags.service';
 import { PatchPostDto } from '../dtos/patch-post.dto';
+import { GetPostsDto } from '../dtos/get-posts.dto';
 
 @Injectable()
 export class PostsService {
@@ -20,12 +21,14 @@ export class PostsService {
     private readonly metaOptionsRepository: Repository<MetaOption>,
   ) {}
 
-  public async getAllPosts() {
+  public async getAllPosts(postsQuery: GetPostsDto) {
     return await this.postsRepository.find({
       relations: {
         author: true,
         tags: true,
       },
+      skip: (postsQuery.page - 1) * postsQuery.limit,
+      take: postsQuery.limit,
     });
   }
 

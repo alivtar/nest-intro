@@ -7,18 +7,21 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './providers/posts.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
+import { GetPostsDto } from './dtos/get-posts.dto';
 
 @Controller('posts')
 export class PostsController {
   constructor(readonly postsService: PostsService) {}
 
   @Get()
-  public getPosts() {
-    return this.postsService.getAllPosts();
+  public getPosts(@Query() postsQuery: GetPostsDto) {
+    console.log('postsQuery', postsQuery);
+    return this.postsService.getAllPosts(postsQuery);
   }
 
   @Post()
