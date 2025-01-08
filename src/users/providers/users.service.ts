@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user.entity';
@@ -6,6 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
+import { HashingProvider } from 'src/auth/providers/hashing.provider';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,7 @@ export class UsersService {
 
     private readonly configService: ConfigService,
     private readonly createManyUsersProvider: UsersCreateManyProvider,
+    private readonly hashingProvider: HashingProvider,
   ) {}
 
   public async getAll() {
@@ -37,7 +39,10 @@ export class UsersService {
       // todo: Handle the existing user error
     }
 
-    const newUser = this.usersRepository.create(createUserDto);
+    const newUser = this.usersRepository.create({
+      ...createUserDto,
+      password: await this.hashingProvider.hashPassword(createUserDto.password),
+    });
 
     return await this.usersRepository.save(newUser);
   }

@@ -1,4 +1,4 @@
-abstract class HashingProvider {
+export abstract class HashingProvider {
   abstract hashPassword(rawPassword: string | Buffer): Promise<string>;
 
   abstract compareHash(

@@ -1,4 +1,5 @@
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
+import { HashingProvider } from './hashing.provider';
 
 export class BcryptProvider implements HashingProvider {
   async hashPassword(rawPassword: string | Buffer): Promise<string> {
