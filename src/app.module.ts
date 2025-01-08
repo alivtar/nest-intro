@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { ConfigModule } from '@nestjs/config';
+import { PaginationModule } from './common/pagination/Pagination.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     MetaOptionsModule,
     TagsModule,
+    PaginationModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

@@ -8,4 +8,4 @@
 }}
 
 GET http://localhost:3000/posts/
-    ?startDate={{startDate}}&endDate={{endDate}}&page=2&limit=15
+    ?startDate={{startDate}}&endDate={{endDate}}&page=2&limit=3
