@@ -20,6 +20,7 @@ import { PaginationModule } from './common/pagination/Pagination.module';
     PaginationModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['.env', '.env.development'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [],
