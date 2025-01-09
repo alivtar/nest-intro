@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, RequestTimeoutException } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
@@ -51,5 +51,15 @@ export class UsersService {
     return await this.createManyUsersProvider.createManyUsers(
       createManyUsersDto,
     );
+  }
+
+  public async findOneUserByEmail(email: string) {
+    try {
+      return await this.usersRepository.findOneBy({ email });
+    } catch (err) {
+      throw new RequestTimeoutException(err, {
+        description: 'Could not find user.',
+      });
+    }
   }
 }
