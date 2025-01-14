@@ -7,8 +7,17 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PaginationModule } from './common/pagination/Pagination.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';
+import jwtConfig from './auth/config/jwt.config';
+import { JwtModule } from '@nestjs/jwt';
+import environmentValidation from './config/environment.validation';
+import { appConfig } from './config/app.config';
+import { databaseConfig } from './config/database.config';
+
+const ENV = process.env.NODE_ENV;
 
 @Module({
   imports: [
@@ -20,29 +29,40 @@ import { PaginationModule } from './common/pagination/Pagination.module';
     PaginationModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.development'],
+      // envFilePath: ['.env', '.env.development'],
+      envFilePath: !ENV ? '.env' : `.env.${ENV}`,
+      // validationSchema: environmentValidation,
+      load: [appConfig, databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
-      imports: [],
-      inject: [],
-      useFactory: () => {
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
         return {
           type: 'postgres',
-          port: 5432,
-          host: 'localhost',
-          username: 'postgres',
-          password: 'superuser',
-          database: 'nestjs-blog',
           // entities: [User, Post],
-          autoLoadEntities: true,
-          synchronize: true,
+          port: configService.get('database.port'),
+          host: configService.get('database.host'),
+          username: configService.get('database.username'),
+          password: configService.get('database.password'),
+          database: configService.get('database.name'),
+          autoLoadEntities: configService.get('database.autoLoadEntities'),
+          synchronize: configService.get('database.synchronize'),
         };
       },
     }),
     TagsModule,
     MetaOptionsModule,
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+  ],
 })
 export class AppModule {}

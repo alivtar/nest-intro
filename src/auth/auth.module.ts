@@ -7,6 +7,8 @@ import { UsersModule } from 'src/users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from './config/jwt.config';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './guards/access-token/access-token.guard';
 
 @Module({
   controllers: [AuthController],
