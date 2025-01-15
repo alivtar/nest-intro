@@ -1,12 +1,14 @@
-import { Injectable, RequestTimeoutException } from '@nestjs/common';
+import { Inject, Injectable, RequestTimeoutException } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user.entity';
 import { Repository } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 import { HashingProvider } from 'src/auth/providers/hashing.provider';
+import profileConfig from '../config/profile.config';
+import { databaseConfig } from 'src/config/database.config';
 
 @Injectable()
 export class UsersService {
@@ -17,10 +19,14 @@ export class UsersService {
     private readonly configService: ConfigService,
     private readonly createManyUsersProvider: UsersCreateManyProvider,
     private readonly hashingProvider: HashingProvider,
+
+    @Inject(profileConfig.KEY)
+    private readonly profileConfiguration: ConfigType<typeof profileConfig>,
   ) {}
 
   public async getAll() {
     const value = this.configService.get<string>('S3_BUCKET');
+    console.log('aaa', this.profileConfiguration);
     return await this.usersRepository.find();
   }
 
